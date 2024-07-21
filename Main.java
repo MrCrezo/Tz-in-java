@@ -3,19 +3,22 @@ import java.util.Scanner;
 public class Main {
     public static void main(String[] args) throws Exception {
         Scanner sc = new Scanner(System.in);
-        System.out.println("Введите 2 значения в двойных кавычках для строк!");
-        System.out.println("При делении и умножении второе значение обязательно цифра!");
-        System.out.println("Между значениями один из знаков операции /, *, -, + пробел перед знаком и после!");
+        System.out.println(
+                """
+                        Введите 2 значения в двойных кавычках для строк!
+                        При делении и умножении второе значение обязательно цифра!
+                        Между значениями один из знаков операции /, *, -, + пробел перед знаком и после!
+                        """
+        );
         String exp = sc.nextLine();
         char action;
         String[] data;
-
 
         if (exp.contains("+")) {
             data = exp.split(" \\+ ");
             action = '+';
         } else if (exp.contains("-")) {
-            data = exp.split(" - ");
+            data = exp.split(" - ", 2);
             action = '-';
         } else if (exp.contains("*")) {
             data = exp.split(" \\* ");
@@ -23,19 +26,25 @@ public class Main {
         } else if (exp.contains("/")) {
             data = exp.split(" / ");
             action = '/';
-        } else {
+
+         }else {
             throw new Exception("Некорректный знак действия");
         }
+
 
         if (action == '+' || action == '-') {
             for (String datum : data) {
                 if (!datum.startsWith("\"") || !datum.endsWith("\"")) {
+                    if (datum.equals(String.valueOf(action))) {
+                        continue;
+                    }
                     throw new Exception("Значения должны быть в двойных кавычках");
                 }
             }
         }
 
         if (action == '*' || action == '/') {
+
             if (!data[0].startsWith("\"") || !data[0].endsWith("\"")) {
                 throw new Exception("Значения должны быть в двойных кавычках");
             }
@@ -50,10 +59,6 @@ public class Main {
             } catch (NumberFormatException e) {
                 throw new Exception("Второе значение должно быть числом");
             }
-        }
-        int value = Integer.parseInt(data[1]);
-        if (value == 0 || (value > 10)) {
-            throw new Exception("Число может быть только от 1 до 10");
         }
 
         for (int i = 0; i < data.length; i++) {
@@ -73,34 +78,45 @@ public class Main {
                 division(data);
                 break;
         }
-
     }
     static void addition(String[] data) {
         printInQuotes(data[0] + data[1]);
-        }
+    }
     static void subtraction(String[] data) {
-        int index = data[0].indexOf(data[1]);
-        if (index == -1) {
-            printInQuotes(data[0]);
-        } else {
-            String result = data[0].substring(0, index);
-            result += data[0].substring(index + data[1].length());
-            printInQuotes(result);
+        for (String datum : data) {
+            if (!datum.equals(data[1])) {
+                int index = datum.indexOf(data[1]);
+                if (index == -1) {
+                    printInQuotes(data[0]);
+                } else {
+                    String result = data[0].substring(0, index);
+                    result += data[0].substring(index + data[1].length());
+                    printInQuotes(result);
+                }
+            }
         }
     }
-    static void multiplication(String[] data) {
-         int multiplier = Integer.parseInt(data[1]);
-         String result = "";
-         for (int i = 0; i < multiplier; i++) {
-             result += data[0];
-         }
-         printInQuotes(result);
+    static void multiplication(String[] data) throws Exception {
+        int value = Integer.parseInt(data[1]);
+        if (value == 0 || (value > 10)) {
+            throw new Exception("Число может быть только от 1 до 10");
+        }
+        int multiplier = Integer.parseInt(data[1]);
+        String result = "";
+        for (int i = 0; i < multiplier; i++) {
+            result += data[0];
+        }
+        printInQuotes(result);
     }
-    static void division(String[] data) {
+    static void division(String[] data) throws Exception {
+        int value = Integer.parseInt(data[1]);
+        if (value == 0 || (value > 10)) {
+            throw new Exception("Число может быть только от 1 до 10");
+        }
         int newLen = data[0].length() / Integer.parseInt(data[1]);
         String result = data[0].substring(0, newLen);
         printInQuotes(result);
-        }
+    }
 
     static void printInQuotes(String text) {
         if (text.length() > 40) {
