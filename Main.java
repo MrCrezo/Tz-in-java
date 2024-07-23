@@ -61,6 +61,15 @@ public class Main {
             }
         }
 
+        data[1] = data[1].replace("\"", "");
+        if (data[1].length() > 10) {
+            throw new Exception("Длина строки не должна превышать 10 символов");
+        }
+        data[0] = data[0].replace("\"", "");
+        if (data[0].length() > 10) {
+            throw new Exception("Длина строки не должна превышать 10 символов");
+        }
+
         for (int i = 0; i < data.length; i++) {
             data[i] = data[i].replace("\"", "");
         }
@@ -78,6 +87,7 @@ public class Main {
                 division(data);
                 break;
         }
+
     }
     static void addition(String[] data) {
         printInQuotes(data[0] + data[1]);
